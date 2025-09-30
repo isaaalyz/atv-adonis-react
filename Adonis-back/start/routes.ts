@@ -10,62 +10,44 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 
+// Rota pública de teste
 router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
-
-router.group(() => {
-  router.resource('cursos', '#controllers/cursos_controller')
-}).use([middleware.auth()])
-
-router.group(() => {
-  router.resource('disciplinas', '#controllers/disciplinas_controller')
-}).use([middleware.auth()])
-
-router.group(() => {
-  router.resource('alunos', '#controllers/alunos_controller')
-}).use([middleware.auth()])
-
-// Matrículas
-router.group(() => {
-  router.get('matriculas', '#controllers/matriculas_controller.index')
-  router.post('matriculas', '#controllers/matriculas_controller.store')
-  router.delete('matriculas/:alunoId/:disciplinaId', '#controllers/matriculas_controller.destroy')
-}).use([middleware.auth()])
-
-// Rota pública boas-vindas / autenticação
-router.get('/hello', async () => {
-  return {
-    message: 'API AdonisJS com Autenticação por Access Tokens',
-    version: '1.0.0',
-    endpoints: {
-      auth: {
-        register: 'POST /auth/register',
-        login: 'POST /auth/login',
-        logout: 'POST /auth/logout (protegida)',
-        me: 'GET /auth/me (protegida)',
-        tokens: 'GET /auth/tokens (protegida)',
-        createToken: 'POST /auth/tokens (protegida)'
-      },
-      protected: {
-        profile: 'GET /profile (protegida)',
-        dashboard: 'GET /dashboard (protegida)',
-        posts: 'GET /posts (protegida)',
-        createPost: 'POST /posts (protegida)'
-      },
-    },
-  }
+  return { message: 'API BANIF - Backend AdonisJS', version: '1.0.0' }
 })
 
 // Rotas de autenticação (públicas)
 router.group(() => {
   router.post('/register', '#controllers/auth_controller.register')
   router.post('/login', '#controllers/auth_controller.login')
+
   // Rotas protegidas de autenticação
   router.post('/logout', '#controllers/auth_controller.logout').use(middleware.auth())
   router.get('/me', '#controllers/auth_controller.me').use(middleware.auth())
-  router.get('/tokens', '#controllers/auth_controller.tokens').use(middleware.auth())
-  router.post('/tokens', '#controllers/auth_controller.createToken').use(middleware.auth())
 }).prefix('/auth')
+
+// Rotas de clientes (protegidas)
+router.group(() => {
+  router.get('/', '#controllers/cliente_controller.index')
+  router.get('/:id', '#controllers/cliente_controller.show')
+  router.post('/', '#controllers/cliente_controller.store')
+}).prefix('/clientes').use([middleware.auth()])
+
+// Rotas de contas (protegidas)
+router.group(() => {
+  router.post('/', '#controllers/conta_controller.store') // criar conta
+  router.get('/:id/saldo', '#controllers/conta_controller.saldo') // verificar saldo
+}).prefix('/contas').use([middleware.auth()])
+
+// Rotas de movimentações (protegidas)
+router.group(() => {
+  router.post('/transferir', '#controllers/movimentacao_controller.transferir') // transferência Pix
+  router.post('/depositar', '#controllers/movimentacao_controller.depositar')
+  router.post('/sacar', '#controllers/movimentacao_controller.sacar')
+  router.get('/extrato/:conta_id', '#controllers/movimentacao_controller.extrato')
+}).prefix('/movimentacoes').use([middleware.auth()])
+
+// Rotas de aplicações financeiras (protegidas)
+router.group(() => {
+  router.post('/', '#controllers/aplicacao_controller.store') // criar aplicação
+  router.post('/:id/resgatar', '#controllers/aplicacao_controller.resgatarAplicacao') // resgatar
+}).prefix('/aplicacoes').use([middleware.auth()])

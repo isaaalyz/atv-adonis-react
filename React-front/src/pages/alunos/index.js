@@ -39,7 +39,6 @@ export default function HomeAluno() {
         fetchData();
     }, []);
 
-    // REMOVE FUNCIONAL
     function removeAluno(aluno) {
 
         const alunoId = aluno.id || aluno.aluno_id;
@@ -71,7 +70,7 @@ export default function HomeAluno() {
                         keys={['nome', 'curso_nome']} 
                         resource='alunos'
                         crud={['viewAluno', 'createAluno', 'editAluno', 'deleteAluno']}
-                        remove={removeAluno} // <-- passa a função
+                        remove={removeAluno} 
                     />
                   </Container>
             }

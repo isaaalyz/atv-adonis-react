@@ -65,7 +65,6 @@ export default function HomeMatricula() {
     }
     
     
-
     return (
         <>
             <NavigationBar />
@@ -75,16 +74,16 @@ export default function HomeMatricula() {
                   </Container>
                 : <Container className='mt-2'>
                     <DataTable
-    title="Matrículas Registradas"
-    rows={['Aluno', 'Disciplina', 'Ações']}
-    hide={[false, false, false]}
-    data={data}
-    setData={setData} // <-- adicionar
-    keys={['aluno_nome', 'disciplina_nome']}
-    resource='matriculas'
-    crud={['viewMatricula', 'createMatricula', 'editMatricula', 'deleteMatricula']}
-    remove={removeMatricula} // <-- adicionar
-/>
+                        title="Matrículas Registradas"
+                        rows={['Aluno', 'Disciplina', 'Ações']}
+                        hide={[false, false, false]}
+                        data={data}
+                        setData={setData} 
+                        keys={['aluno_nome', 'disciplina_nome']}
+                        resource='matriculas'
+                        crud={['viewMatricula', 'createMatricula', 'editMatricula', 'deleteMatricula']}
+                        remove={removeMatricula} 
+                    />
 
                 </Container>
             }
